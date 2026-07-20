@@ -3,62 +3,124 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#070a12">
-  <meta name="description" content="Интерактивная книга «Сказочная Словения. Книга двенадцати созвездий».">
   <title>Сказочная Словения</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css/main.css">
+  <style>
+    :root{
+      --night:#050814;
+      --night2:#101b2d;
+      --gold:#e7cf82;
+      --ivory:#f4edd8;
+      --ink:#2a1d13;
+      --paper:#efe5c8;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--night);color:var(--ivory);font-family:Georgia,"Times New Roman",serif}
+    body{overflow:hidden}
+    button{font:inherit}
+    .scene{
+      position:fixed;inset:0;opacity:0;visibility:hidden;pointer-events:none;
+      transition:opacity 1s ease,visibility 1s ease;overflow:hidden
+    }
+    .scene.active{opacity:1;visibility:visible;pointer-events:auto}
+    .intro{display:grid;place-items:center;background:
+      radial-gradient(circle at 50% 45%,rgba(52,75,120,.25),transparent 38%),var(--night)}
+    #stars{position:absolute;inset:0;width:100%;height:100%}
+    .intro-copy{position:relative;z-index:2;text-align:center;padding:2rem}
+    .intro-line{
+      margin:.1em 0;font-size:clamp(2rem,5vw,5rem);
+      opacity:0;transform:translateY(18px);transition:1.5s ease
+    }
+    .intro-line.show{opacity:1;transform:none}
+    .intro-line.gold{color:var(--gold);font-style:italic}
+    .skip{
+      position:absolute;z-index:5;right:24px;top:20px;border:0;background:transparent;
+      color:#fff;opacity:.75;cursor:pointer
+    }
+    .tree-scene{
+      background:
+      radial-gradient(circle at 50% 45%,rgba(167,196,107,.18),transparent 34%),
+      linear-gradient(#07101e 0%,#102332 55%,#182019 100%)
+    }
+    .tree{
+      position:absolute;left:50%;bottom:-4vh;transform:translateX(-50%);
+      width:min(82vw,1050px);height:96vh
+    }
+    .roots path,.branches path{fill:none;stroke:#7d512f;stroke-linecap:round}
+    .roots path{stroke-width:18}.branches path{stroke-width:22}
+    .trunk{fill:url(#trunk)}
+    .crown ellipse{fill:url(#leaf);opacity:.68;filter:url(#glow)}
+    .node{cursor:pointer}
+    .node circle{fill:var(--gold);filter:url(#glow)}
+    .node text{fill:#fff;font-size:18px;text-anchor:middle;opacity:0;transition:.3s}
+    .node:hover text,.node:focus text{opacity:1}
+    .node:hover circle,.node:focus circle{transform:scale(1.35);transform-origin:center}
+    .titlebox{
+      position:absolute;z-index:3;left:50%;bottom:28px;transform:translateX(-50%);
+      width:min(92vw,780px);text-align:center;text-shadow:0 3px 18px #000
+    }
+    .eyebrow{font:700 .72rem/1 Arial,sans-serif;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+    h1{margin:.2rem 0;font-weight:500;font-size:clamp(3rem,7vw,7rem);line-height:.9}
+    .subtitle{font-size:clamp(1.1rem,2vw,1.5rem)}
+    .primary{
+      border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:.9rem 1.5rem;
+      background:linear-gradient(135deg,#f1dfa1,#bd9550);color:#1d150c;cursor:pointer;
+      font-family:Arial,sans-serif;font-weight:700
+    }
+    .book-scene{
+      display:grid;place-items:center;padding:4rem 1rem 1rem;
+      background:radial-gradient(circle,rgba(103,75,37,.25),transparent 45%),#080b12
+    }
+    .back{position:absolute;left:24px;top:20px;border:0;background:transparent;color:#fff;cursor:pointer}
+    .book{display:grid;grid-template-columns:1fr 1.15fr;width:min(92vw,940px);min-height:min(68vh,640px);
+      filter:drop-shadow(0 24px 60px rgba(0,0,0,.55))}
+    .cover,.page{padding:clamp(2rem,5vw,5rem)}
+    .cover{
+      display:grid;place-content:center;text-align:center;background:#352014;color:var(--gold);
+      border:1px solid #7b5d35;border-radius:14px 0 0 14px
+    }
+    .cover .big{font-size:clamp(2rem,4vw,4.2rem);line-height:.95;margin:.6rem 0}
+    .cover .small{font-family:Arial,sans-serif;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase}
+    .page{background:var(--paper);color:var(--ink);border-radius:0 14px 14px 0}
+    .page h2{font-size:clamp(2rem,4vw,4rem);margin:0 0 1rem;line-height:1}
+    .page p{font-size:clamp(1.1rem,2vw,1.4rem);line-height:1.55}
+    @media(max-width:720px){
+      .tree{width:125vw;height:88vh;bottom:5vh}
+      .book{display:block}
+      .cover{min-height:30vh;border-radius:14px 14px 0 0}
+      .page{min-height:42vh;border-radius:0 0 14px 14px}
+    }
+  </style>
 </head>
 <body>
-  <noscript>
-    <div class="noscript">Для интерактивной версии книги требуется JavaScript.</div>
-  </noscript>
-
-  <main id="app">
-    <section class="scene scene--intro is-active" data-scene="intro" aria-label="Пролог">
-      <canvas id="starfield" aria-hidden="true"></canvas>
-
-      <div class="mist mist--one" aria-hidden="true"></div>
-      <div class="mist mist--two" aria-hidden="true"></div>
-
-      <div class="intro-copy" aria-live="polite">
-        <p class="intro-line" data-step="1">До сотворения времён</p>
-        <p class="intro-line" data-step="2">ничего не было.</p>
-        <p class="intro-line intro-line--accent" data-step="3">Но всё уже было.</p>
+  <main>
+    <section class="scene intro active" data-scene="intro">
+      <canvas id="stars"></canvas>
+      <div class="intro-copy">
+        <p class="intro-line">До сотворения времён</p>
+        <p class="intro-line">ничего не было.</p>
+        <p class="intro-line gold">Но всё уже было.</p>
       </div>
-
-      <button class="skip-button" type="button" data-action="skip-intro">Пропустить</button>
+      <button class="skip" data-action="tree">Пропустить</button>
     </section>
 
-    <section class="scene scene--tree" data-scene="tree" aria-label="Великая Липа">
-      <div class="sky-glow" aria-hidden="true"></div>
-
-      <svg class="great-tree" viewBox="0 0 1200 900" role="img" aria-labelledby="tree-title tree-desc">
-        <title id="tree-title">Великая Липа</title>
-        <desc id="tree-desc">Символическая липа с двенадцатью ветвями-созвездиями.</desc>
-
+    <section class="scene tree-scene" data-scene="tree">
+      <svg class="tree" viewBox="0 0 1200 900" aria-label="Великая Липа">
         <defs>
-          <linearGradient id="trunkGradient" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#5a321f"/>
-            <stop offset="55%" stop-color="#8c5b31"/>
+          <linearGradient id="trunk" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#56311f"/>
+            <stop offset="55%" stop-color="#8b5a31"/>
             <stop offset="100%" stop-color="#3d2419"/>
           </linearGradient>
-          <radialGradient id="leafGradient">
-            <stop offset="0%" stop-color="#c7d783"/>
-            <stop offset="100%" stop-color="#3e5a2f"/>
+          <radialGradient id="leaf">
+            <stop offset="0%" stop-color="#c6d684"/>
+            <stop offset="100%" stop-color="#3f5d31"/>
           </radialGradient>
-          <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="8" result="blur"/>
-            <feMerge>
-              <feMergeNode in="blur"/>
-              <feMergeNode in="SourceGraphic"/>
-            </feMerge>
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="8" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
           </filter>
         </defs>
-
-        <g class="roots" aria-hidden="true">
+        <g class="roots">
           <path d="M590 700 C480 745 365 790 225 820"/>
           <path d="M610 705 C520 770 465 825 380 865"/>
           <path d="M625 700 C630 770 650 825 690 875"/>
@@ -67,15 +129,8 @@
           <path d="M630 710 C700 770 760 825 835 875"/>
           <path d="M575 705 C465 755 320 745 120 770"/>
         </g>
-
-        <path class="trunk" d="M535 740
-          C565 650 545 560 580 475
-          C610 405 590 320 620 245
-          C650 330 640 405 665 470
-          C700 560 680 650 710 740
-          C655 770 590 770 535 740 Z"/>
-
-        <g class="branches" aria-hidden="true">
+        <path class="trunk" d="M535 740 C565 650 545 560 580 475 C610 405 590 320 620 245 C650 330 640 405 665 470 C700 560 680 650 710 740 C655 770 590 770 535 740 Z"/>
+        <g class="branches">
           <path d="M600 550 C500 500 430 430 350 340"/>
           <path d="M625 520 C735 475 825 410 910 320"/>
           <path d="M610 470 C520 405 500 320 470 225"/>
@@ -83,52 +138,80 @@
           <path d="M615 400 C565 330 570 250 575 150"/>
           <path d="M645 395 C685 315 675 225 660 120"/>
         </g>
-
-        <g class="crown" aria-hidden="true">
+        <g class="crown">
           <ellipse cx="600" cy="280" rx="255" ry="185"/>
           <ellipse cx="430" cy="390" rx="190" ry="145"/>
           <ellipse cx="785" cy="385" rx="200" ry="150"/>
           <ellipse cx="600" cy="455" rx="265" ry="160"/>
         </g>
-
-        <g id="constellation-nodes" class="constellation-nodes"></g>
+        <g id="nodes"></g>
       </svg>
-
-      <div class="tree-copy">
-        <p class="eyebrow">Книга двенадцати созвездий</p>
+      <div class="titlebox">
+        <div class="eyebrow">Книга двенадцати созвездий</div>
         <h1>Сказочная Словения</h1>
-        <p class="tree-subtitle">Каждая сказка — один лист Великой Липы.</p>
-        <button class="primary-button" type="button" data-action="open-book">Войти в Великий Сон</button>
+        <p class="subtitle">Каждая сказка — один лист Великой Липы.</p>
+        <button class="primary" data-action="book">Войти в Великий Сон</button>
       </div>
     </section>
 
-    <section class="scene scene--book" data-scene="book" aria-label="Книга">
-      <button class="back-button" type="button" data-action="back-tree">← К Липе</button>
-
-      <div class="book-shell">
-        <div class="book" id="book">
-          <div class="book-cover">
-            <div class="book-ornament">✦</div>
-            <p>Сказочная Словения</p>
-            <span>Книга двенадцати созвездий</span>
-          </div>
-
-          <article class="book-page">
-            <p class="page-kicker">Пролог</p>
-            <h2>Большой миф Словении</h2>
-            <p>
-              Здесь будет размещён авторский текст пролога. Каркас уже поддерживает
-              разделение произведения на сцены, главы и двенадцать сказок.
-            </p>
-            <button class="primary-button" type="button" data-action="open-story" data-story="story01">
-              Открыть первую сказку
-            </button>
-          </article>
+    <section class="scene book-scene" data-scene="book">
+      <button class="back" data-action="tree">← К Липе</button>
+      <div class="book">
+        <div class="cover">
+          <div>✦</div>
+          <div class="big">Сказочная Словения</div>
+          <div class="small">Книга двенадцати созвездий</div>
         </div>
+        <article class="page">
+          <div class="eyebrow">Пролог</div>
+          <h2>Большой миф Словении</h2>
+          <p>Здесь будет размещён авторский текст пролога. Эта версия проверяет работу дизайна, анимации и переходов без дополнительных папок и файлов.</p>
+          <button class="primary" onclick="alert('Первая сказка будет подключена следующим этапом.')">Открыть первую сказку</button>
+        </article>
       </div>
     </section>
   </main>
 
-  <script type="module" src="./js/app.js"></script>
+<script>
+const scenes=[...document.querySelectorAll('[data-scene]')];
+function show(name){scenes.forEach(s=>s.classList.toggle('active',s.dataset.scene===name))}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-action]'); if(!b)return; show(b.dataset.action)
+});
+
+const canvas=document.getElementById('stars'),ctx=canvas.getContext('2d');
+let stars=[];
+function resize(){
+  const d=Math.min(devicePixelRatio||1,2),w=canvas.clientWidth,h=canvas.clientHeight;
+  canvas.width=w*d;canvas.height=h*d;ctx.setTransform(d,0,0,d,0,0);
+  stars=Array.from({length:Math.max(90,Math.floor(w*h/10000))},()=>({
+    x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.4+.25,a:Math.random()*.55+.15,p:Math.random()*6.28
+  }));
+}
+function draw(t=0){
+  ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
+  for(const s of stars){
+    ctx.beginPath();ctx.fillStyle=`rgba(240,222,163,${Math.max(.08,s.a+.2*Math.sin(t*.0007+s.p))})`;
+    ctx.arc(s.x,s.y,s.r,0,6.28);ctx.fill();
+  }
+  requestAnimationFrame(draw)
+}
+addEventListener('resize',resize);resize();draw();
+
+const lines=[...document.querySelectorAll('.intro-line')];
+[700,2400,4300].forEach((d,i)=>setTimeout(()=>lines[i].classList.add('show'),d));
+setTimeout(()=>show('tree'),7600);
+
+const coords=[[365,290],[465,205],[575,145],[685,145],[795,205],[895,300],[910,420],[805,510],[680,535],[545,535],[410,500],[305,410]];
+const ns='http://www.w3.org/2000/svg',nodes=document.getElementById('nodes');
+coords.forEach((c,i)=>{
+  const g=document.createElementNS(ns,'g');g.setAttribute('class','node');g.setAttribute('tabindex','0');g.setAttribute('transform',`translate(${c[0]} ${c[1]})`);
+  const circle=document.createElementNS(ns,'circle');circle.setAttribute('r','7');
+  const text=document.createElementNS(ns,'text');text.setAttribute('y','-18');text.textContent=`Созвездие ${i+1}`;
+  const open=()=>alert(`Созвездие ${i+1}\n\nРаздел подготовлен для авторской сказки.`);
+  g.addEventListener('click',open);g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' ')open()});
+  g.append(circle,text);nodes.appendChild(g)
+});
+</script>
 </body>
 </html>
