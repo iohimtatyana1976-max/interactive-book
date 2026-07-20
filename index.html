@@ -1,12 +1,98 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Интерактивная книга</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Сказочная Словения — интерактивная книга двенадцати созвездий">
+  <title>Сказочная Словения</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body style="font-family:Arial;text-align:center;margin-top:100px;background:#f8f4e8;">
-    <h1>📖 Добро пожаловать!</h1>
-    <h2>Интерактивная книга</h2>
-    <p>Это начало нашего проекта.</p>
+<body>
+  <canvas id="stars" aria-hidden="true"></canvas>
+
+  <main>
+    <section class="intro" id="intro">
+      <div class="glow"></div>
+
+      <div class="intro-copy">
+        <p class="eyebrow">Книга двенадцати созвездий</p>
+        <h1>Сказочная Словения</h1>
+        <p class="lead">
+          Под сенью Великой Липы оживают двенадцать замков,
+          двенадцать созвездий и две истории начала.
+        </p>
+        <button class="gold-button" id="openBook" type="button">
+          Открыть книгу
+        </button>
+        <p class="hint">Звук можно будет добавить позже</p>
+      </div>
+
+      <figure class="cover-wrap" aria-label="Обложка книги">
+        <img src="assets/cover.jpeg" alt="Обложка книги «Сказочная Словения»">
+      </figure>
+    </section>
+
+    <section class="reader hidden" id="reader" aria-label="Интерактивная книга">
+      <div class="reader-header">
+        <button class="text-button" id="backToCover" type="button">← К обложке</button>
+        <div>
+          <p class="eyebrow">Сказочная Словения</p>
+          <h2 id="chapterTitle">Пролог</h2>
+        </div>
+        <button class="text-button" id="toggleMap" type="button">Карта созвездий</button>
+      </div>
+
+      <div class="book-stage">
+        <button class="nav-arrow" id="prevPage" type="button" aria-label="Предыдущая страница">‹</button>
+
+        <article class="book" id="book">
+          <section class="page page-left">
+            <div class="page-inner">
+              <span class="page-label">Пролог</span>
+              <h3>Под сенью Великой Липы</h3>
+              <p>
+                Здесь будет размещен текст вступления. На этом этапе мы создаем
+                оболочку книги: атмосферу, навигацию и первую рабочую версию.
+              </p>
+              <p>
+                Позже мы заменим этот текст на настоящий и добавим иллюстрации,
+                главы, созвездия и мягкие анимации.
+              </p>
+              <span class="page-number">1</span>
+            </div>
+          </section>
+
+          <section class="page page-right">
+            <div class="illustration-placeholder">
+              <div class="constellation">✦</div>
+              <p>Здесь будет первая иллюстрация</p>
+            </div>
+            <span class="page-number">2</span>
+          </section>
+        </article>
+
+        <button class="nav-arrow" id="nextPage" type="button" aria-label="Следующая страница">›</button>
+      </div>
+
+      <div class="progress">
+        <span id="progressText">Разворот 1 из 3</span>
+        <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+      </div>
+    </section>
+
+    <section class="map-panel hidden" id="mapPanel" aria-label="Карта двенадцати созвездий">
+      <div class="map-card">
+        <button class="close-map" id="closeMap" type="button" aria-label="Закрыть">×</button>
+        <p class="eyebrow">Карта путешествия</p>
+        <h2>Двенадцать созвездий</h2>
+        <div class="castle-grid" id="castleGrid"></div>
+        <p class="map-note">
+          Пройденные главы будут загораться золотым светом.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
