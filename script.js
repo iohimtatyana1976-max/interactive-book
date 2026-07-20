@@ -1,157 +1,111 @@
-const intro = document.getElementById('intro');
-const reader = document.getElementById('reader');
-const mapPanel = document.getElementById('mapPanel');
-const openBook = document.getElementById('openBook');
-const backToCover = document.getElementById('backToCover');
-const toggleMap = document.getElementById('toggleMap');
-const closeMap = document.getElementById('closeMap');
-const prevPage = document.getElementById('prevPage');
-const nextPage = document.getElementById('nextPage');
-const chapterTitle = document.getElementById('chapterTitle');
-const progressText = document.getElementById('progressText');
-const progressBar = document.getElementById('progressBar');
-const book = document.getElementById('book');
-const castleGrid = document.getElementById('castleGrid');
+const canvas = document.getElementById("starfield");
+const ctx = canvas.getContext("2d");
+const hero = document.getElementById("hero");
+const reader = document.getElementById("reader");
+const openButton = document.getElementById("openBook");
+const bookWrap = document.getElementById("bookWrap");
+const closeReader = document.getElementById("closeReader");
+const soundToggle = document.getElementById("soundToggle");
 
-const spreads = [
-  {
-    title: 'Пролог',
-    leftTitle: 'Под сенью Великой Липы',
-    leftText: [
-      'Здесь будет размещен текст вступления. На этом этапе мы создаем оболочку книги: атмосферу, навигацию и первую рабочую версию.',
-      'Позже мы заменим этот текст на настоящий и добавим иллюстрации, главы, созвездия и мягкие анимации.'
-    ],
-    art: '✦',
-    artText: 'Здесь будет первая иллюстрация'
-  },
-  {
-    title: 'Созвездие I',
-    leftTitle: 'Первый замок',
-    leftText: [
-      'Здесь начнется первая глава. Текст можно будет читать на развороте, а иллюстрация займет соседнюю страницу.',
-      'Каждая прочитанная глава будет зажигать одно созвездие на карте.'
-    ],
-    art: '♜',
-    artText: 'Иллюстрация первого замка'
-  },
-  {
-    title: 'Созвездие II',
-    leftTitle: 'Дорога под звездами',
-    leftText: [
-      'Эта версия показывает принцип работы. Далее мы добавим ваши настоящие страницы и художественные материалы.',
-      'Навигация останется простой: вперед, назад и карта двенадцати созвездий.'
-    ],
-    art: '✧',
-    artText: 'Следующая иллюстрация'
-  }
-];
-
-let currentSpread = 0;
-
-function renderSpread() {
-  const data = spreads[currentSpread];
-  chapterTitle.textContent = data.title;
-
-  const left = book.querySelector('.page-left .page-inner');
-  left.innerHTML = `
-    <span class="page-label">${data.title}</span>
-    <h3>${data.leftTitle}</h3>
-    ${data.leftText.map(p => `<p>${p}</p>`).join('')}
-    <span class="page-number">${currentSpread * 2 + 1}</span>
-  `;
-
-  const right = book.querySelector('.page-right');
-  right.innerHTML = `
-    <div class="illustration-placeholder">
-      <div class="constellation">${data.art}</div>
-      <p>${data.artText}</p>
-    </div>
-    <span class="page-number">${currentSpread * 2 + 2}</span>
-  `;
-
-  progressText.textContent = `Разворот ${currentSpread + 1} из ${spreads.length}`;
-  progressBar.style.width = `${((currentSpread + 1) / spreads.length) * 100}%`;
-
-  book.animate(
-    [
-      { opacity: .35, transform: 'perspective(1200px) rotateY(4deg)' },
-      { opacity: 1, transform: 'perspective(1200px) rotateY(0deg)' }
-    ],
-    { duration: 420, easing: 'ease-out' }
-  );
-}
-
-openBook.addEventListener('click', () => {
-  intro.classList.add('hidden');
-  reader.classList.remove('hidden');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  renderSpread();
-});
-
-backToCover.addEventListener('click', () => {
-  reader.classList.add('hidden');
-  intro.classList.remove('hidden');
-});
-
-toggleMap.addEventListener('click', () => mapPanel.classList.remove('hidden'));
-closeMap.addEventListener('click', () => mapPanel.classList.add('hidden'));
-mapPanel.addEventListener('click', (event) => {
-  if (event.target === mapPanel) mapPanel.classList.add('hidden');
-});
-
-prevPage.addEventListener('click', () => {
-  currentSpread = (currentSpread - 1 + spreads.length) % spreads.length;
-  renderSpread();
-});
-
-nextPage.addEventListener('click', () => {
-  currentSpread = (currentSpread + 1) % spreads.length;
-  renderSpread();
-});
-
-for (let i = 1; i <= 12; i++) {
-  const item = document.createElement('div');
-  item.className = 'castle';
-  item.innerHTML = `<strong>${String(i).padStart(2, '0')}</strong><span>Созвездие</span>`;
-  castleGrid.appendChild(item);
-}
-
-// Lightweight star field
-const canvas = document.getElementById('stars');
-const ctx = canvas.getContext('2d');
 let stars = [];
+let meteors = [];
 
-function resizeStars() {
+function resize() {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  canvas.width = innerWidth * dpr;
-  canvas.height = innerHeight * dpr;
-  canvas.style.width = `${innerWidth}px`;
-  canvas.style.height = `${innerHeight}px`;
+  canvas.width = Math.floor(innerWidth * dpr);
+  canvas.height = Math.floor(innerHeight * dpr);
+  canvas.style.width = innerWidth + "px";
+  canvas.style.height = innerHeight + "px";
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  const count = Math.floor((innerWidth * innerHeight) / 9000);
-  stars = Array.from({ length: count }, () => ({
+  const count = Math.min(320, Math.floor(innerWidth * innerHeight / 4200));
+  stars = Array.from({length: count}, () => ({
     x: Math.random() * innerWidth,
     y: Math.random() * innerHeight,
-    r: Math.random() * 1.4 + .2,
-    a: Math.random() * .65 + .2,
-    s: Math.random() * .012 + .003
+    r: Math.random() * 1.25 + .18,
+    a: Math.random() * .72 + .15,
+    s: Math.random() * .005 + .0018,
+    p: Math.random() * Math.PI * 2
   }));
 }
 
-function drawStars() {
-  ctx.clearRect(0, 0, innerWidth, innerHeight);
-  for (const star of stars) {
-    star.a += star.s;
-    if (star.a > .95 || star.a < .2) star.s *= -1;
-    ctx.beginPath();
-    ctx.fillStyle = `rgba(238, 207, 132, ${star.a})`;
-    ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  requestAnimationFrame(drawStars);
+function maybeMeteor() {
+  if (document.hidden || Math.random() > .0045) return;
+  meteors.push({
+    x: Math.random() * innerWidth * .72,
+    y: Math.random() * innerHeight * .32,
+    len: 100 + Math.random() * 120,
+    life: 1
+  });
 }
 
-window.addEventListener('resize', resizeStars);
-resizeStars();
-drawStars();
+function draw(t = 0) {
+  ctx.clearRect(0,0,innerWidth,innerHeight);
+
+  for (const st of stars) {
+    const twinkle = Math.sin(t * st.s + st.p) * .2;
+    ctx.beginPath();
+    ctx.fillStyle = `rgba(248,225,164,${Math.max(.06, st.a + twinkle)})`;
+    ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  maybeMeteor();
+  meteors = meteors.filter(m => m.life > 0);
+  for (const m of meteors) {
+    const g = ctx.createLinearGradient(m.x,m.y,m.x+m.len,m.y+m.len*.42);
+    g.addColorStop(0,`rgba(255,241,192,${m.life})`);
+    g.addColorStop(1,"rgba(255,241,192,0)");
+    ctx.strokeStyle = g;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(m.x,m.y);
+    ctx.lineTo(m.x+m.len,m.y+m.len*.42);
+    ctx.stroke();
+    m.x += 3.5; m.y += 1.45; m.life -= .017;
+  }
+
+  requestAnimationFrame(draw);
+}
+
+function openReader() {
+  hero.classList.add("leaving");
+  setTimeout(() => {
+    reader.classList.add("visible");
+    reader.setAttribute("aria-hidden","false");
+  }, 560);
+}
+
+function closeBook() {
+  reader.classList.remove("visible");
+  reader.setAttribute("aria-hidden","true");
+  setTimeout(() => hero.classList.remove("leaving"), 330);
+}
+
+openButton.addEventListener("click", openReader);
+bookWrap.addEventListener("click", openReader);
+bookWrap.addEventListener("keydown", e => {
+  if (e.key === "Enter" || e.key === " ") openReader();
+});
+closeReader.addEventListener("click", closeBook);
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && reader.classList.contains("visible")) closeBook();
+});
+
+document.addEventListener("pointermove", e => {
+  if (innerWidth <= 900 || hero.classList.contains("leaving")) return;
+  const x = (e.clientX / innerWidth - .5) * 2;
+  const y = (e.clientY / innerHeight - .5) * 2;
+  bookWrap.style.transform = `translateY(-2px) rotateY(${-9 + x * 3.2}deg) rotateX(${2 - y * 2.3}deg)`;
+});
+document.addEventListener("pointerleave", () => bookWrap.style.removeProperty("transform"));
+
+soundToggle.addEventListener("click", () => {
+  const on = soundToggle.getAttribute("aria-pressed") === "true";
+  soundToggle.setAttribute("aria-pressed", String(!on));
+  soundToggle.querySelector("span:last-child").textContent = on ? "Звук: выкл." : "Звук будет добавлен";
+});
+
+window.addEventListener("resize", resize);
+resize();
+requestAnimationFrame(draw);
