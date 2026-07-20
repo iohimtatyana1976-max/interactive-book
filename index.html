@@ -1,5 +1,4 @@
 <!doctype html>
-<!-- Stable build: V7.1. Художественная концепция V7 сохранена. -->
 <html lang="ru">
 <head>
   <meta charset="utf-8">
@@ -12,6 +11,8 @@
   <style>
 
 :root{
+  --mist:rgba(236,223,176,.06);
+
   --night:#03070d;
   --night2:#07131d;
   --gold:#d9a746;
@@ -49,7 +50,7 @@ canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:no
   padding:clamp(2rem,5vw,5rem) clamp(1.5rem,6vw,7rem);
   overflow:hidden;
 }
-.intro{position:relative;z-index:2;max-width:760px;opacity:0;transform:translateY(26px);animation:introIn 1.25s .45s forwards}
+.intro{max-width:760px;opacity:0;transform:translateY(26px);animation:introIn 1.25s .45s forwards}
 .eyebrow{margin:0 0 1.15rem;color:var(--gold2);font-size:.95rem;text-transform:uppercase;letter-spacing:.24em}
 h1{margin:0;line-height:.77;letter-spacing:-.04em;font-weight:400;text-shadow:0 0 22px rgba(237,213,139,.16)}
 h1 span,h1 strong{display:block}
@@ -71,7 +72,7 @@ h1 strong{font-size:clamp(4.8rem,8.2vw,9.2rem);font-weight:400;color:var(--gold)
 .scene{position:relative;display:grid;place-items:center;min-height:78vh;perspective:1700px}
 .tree{
   position:absolute;left:50%;top:48%;width:min(58vw,820px);transform:translate(-50%,-50%);
-  opacity:0;z-index:0;pointer-events:none;filter:drop-shadow(0 0 18px rgba(255,218,128,.75)) drop-shadow(0 0 42px rgba(221,167,61,.42));
+  opacity:0;z-index:-1;filter:drop-shadow(0 0 18px rgba(255,218,128,.75)) drop-shadow(0 0 42px rgba(221,167,61,.42));
   animation:treeIn 2.2s .15s forwards,treeHold 3.1s 2.25s forwards,treeGlow 5.4s 5.35s ease-in-out infinite
 }
 .tree svg{width:100%;display:block}
@@ -80,7 +81,6 @@ h1 strong{font-size:clamp(4.8rem,8.2vw,9.2rem);font-weight:400;color:var(--gold)
 .tree circle:nth-child(2n){animation-delay:.8s,2.7s}.tree circle:nth-child(3n){animation-delay:1.1s,2.9s}.tree circle:nth-child(4n){animation-delay:1.4s,3.1s}
 
 .book{
-  z-index:1;
   width:min(610px,47vw);min-width:350px;position:relative;transform-style:preserve-3d;
   opacity:0;transform:translateY(42px) rotateY(-10deg) rotateX(2deg) scale(.92);
   animation:bookIn 1.7s 3.15s cubic-bezier(.2,.75,.15,1) forwards,float 7s 5s ease-in-out infinite;
@@ -147,8 +147,41 @@ h1 strong{font-size:clamp(4.8rem,8.2vw,9.2rem);font-weight:400;color:var(--gold)
   .book{width:min(360px,80vw)}
 }
 
+
+body::before{
+content:"";
+position:fixed;inset:0;pointer-events:none;
+background:
+radial-gradient(circle at 50% 38%, rgba(255,230,170,.08), transparent 36%),
+radial-gradient(circle at 50% 82%, rgba(255,220,120,.03), transparent 40%);
+mix-blend-mode:screen;
+animation:breathe 10s ease-in-out infinite;
+}
+body::after{
+content:"";
+position:fixed;inset:0;pointer-events:none;
+background:
+radial-gradient(circle at 30% 40%, var(--mist), transparent 18%),
+radial-gradient(circle at 70% 55%, var(--mist), transparent 20%),
+radial-gradient(circle at 52% 70%, rgba(255,240,210,.03), transparent 25%);
+}
+@keyframes breathe{
+0%,100%{opacity:.55}
+50%{opacity:1}
+}
+
 </style>
 
+<style>
+#load-check{
+  position:fixed;right:14px;bottom:14px;z-index:99;
+  padding:.55rem .8rem;border-radius:999px;
+  background:rgba(6,13,20,.72);color:rgba(245,233,199,.72);
+  font:12px/1.2 Arial,sans-serif;border:1px solid rgba(222,183,100,.25);
+  backdrop-filter:blur(10px)
+}
+@media(max-width:700px){#load-check{display:none}}
+</style>
 
 </head>
 <body>
@@ -235,11 +268,10 @@ h1 strong{font-size:clamp(4.8rem,8.2vw,9.2rem);font-weight:400;color:var(--gold)
   <script>
 
 const canvas=document.getElementById('stars');
-const ctx=canvas ? canvas.getContext('2d') : null;
+const ctx=canvas.getContext('2d');
 let stars=[],meteors=[];
 
 function resize(){
-  if(!canvas || !ctx) return;
   const d=Math.min(devicePixelRatio||1,2);
   canvas.width=innerWidth*d;
   canvas.height=innerHeight*d;
@@ -257,7 +289,6 @@ function resize(){
 }
 
 function animate(t=0){
-  if(!ctx) return;
   ctx.clearRect(0,0,innerWidth,innerHeight);
   for(const s of stars){
     ctx.beginPath();
@@ -284,7 +315,7 @@ function animate(t=0){
 }
 addEventListener('resize',resize);
 resize();
-if(ctx) requestAnimationFrame(animate);
+requestAnimationFrame(animate);
 
 const dust=document.getElementById('dust');
 for(let i=0;i<52;i++){
@@ -337,5 +368,6 @@ document.addEventListener('pointermove',e=>{
 document.addEventListener('pointerleave',()=>book.style.removeProperty('transform'));
 
 </script>
+<div id="load-check">V7 • дерево видно первым</div>
 </body>
 </html>
