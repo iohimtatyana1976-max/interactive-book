@@ -45,23 +45,32 @@ h1 span{display:inline-block;color:var(--gold);margin-left:clamp(1rem,3vw,3.5rem
 .note{margin-top:.8rem;color:rgba(240,222,178,.48);font-size:.95rem}
 
 .stage{position:relative;display:grid;place-items:center;min-height:78vh;perspective:1600px}
-.halo{position:absolute;width:min(620px,72vw);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(220,168,73,.25),transparent 62%);filter:blur(22px);animation:breathe 5s ease-in-out infinite}
+.halo{position:absolute;width:min(760px,76vw);aspect-ratio:1;border-radius:50%;
+background:
+radial-gradient(circle,rgba(245,205,109,.30) 0 11%,rgba(220,168,73,.17) 25%,transparent 64%);
+filter:blur(28px);animation:breathe 5.8s ease-in-out infinite}
 .book-wrap{
-  width:min(430px,35vw);min-width:280px;position:relative;transform-style:preserve-3d;
+  width:min(560px,43vw);min-width:320px;position:relative;transform-style:preserve-3d;
   opacity:0;transform:translateY(40px) rotateY(-15deg) rotateX(3deg) scale(.92);
-  animation:bookIn 1.7s 1.35s cubic-bezier(.2,.75,.15,1) forwards,float 6s 3s ease-in-out infinite;
-  filter:drop-shadow(0 42px 50px rgba(0,0,0,.78));cursor:pointer;transition:filter .25s;
+  animation:bookIn 1.7s 1.15s cubic-bezier(.2,.75,.15,1) forwards,float 7s 3s ease-in-out infinite;
+  filter:
+    drop-shadow(0 50px 65px rgba(0,0,0,.84))
+    drop-shadow(0 0 25px rgba(215,165,70,.22));
+  cursor:pointer;transition:filter .25s,transform .35s;
 }
-.book-wrap:hover{filter:drop-shadow(0 50px 62px rgba(0,0,0,.84)) drop-shadow(0 0 24px rgba(206,154,59,.22))}
+.book-wrap:hover{filter:drop-shadow(0 58px 78px rgba(0,0,0,.88)) drop-shadow(0 0 42px rgba(232,187,91,.34))}
 .spine{position:absolute;left:-15px;top:1.5%;bottom:1.5%;width:20px;border-radius:9px 0 0 9px;background:linear-gradient(90deg,#21150d,#835b2c 55%,#26180d);transform:rotateY(-70deg);transform-origin:right}
 .cover{position:relative;border-radius:9px 14px 14px 9px;overflow:hidden;background:#0e2737}
 .cover img{display:block;width:100%;max-height:78vh;object-fit:contain}
 .cover:after{content:"";position:absolute;top:-30%;left:-70%;width:35%;height:165%;transform:rotate(15deg);background:linear-gradient(90deg,transparent,rgba(255,239,183,.22),transparent);animation:shine 7s 4s ease-in-out infinite}
 
-.tree{position:absolute;right:1%;top:50%;width:min(47vw,700px);transform:translateY(-50%);opacity:0;z-index:-1;filter:drop-shadow(0 0 16px rgba(226,182,85,.28));animation:treeIn 2.8s .1s forwards,treeFade 1.2s 3s forwards}
+.tree{position:absolute;right:-1%;top:48%;width:min(52vw,770px);transform:translateY(-50%);opacity:0;z-index:-1;
+filter:drop-shadow(0 0 22px rgba(239,199,104,.35));
+animation:treeIn 3s .1s forwards,treeGlow 5.5s 2.8s ease-in-out infinite}
 .tree svg{width:100%}
-.tree path{fill:none;stroke:rgba(226,184,87,.72);stroke-width:1.2;stroke-linecap:round;stroke-dasharray:900;stroke-dashoffset:900;animation:draw 2.5s .3s forwards}
-.tree circle{fill:#ffe8a9;opacity:0;animation:pop .6s forwards}
+.tree path{fill:none;stroke:rgba(236,200,112,.58);stroke-width:.8;stroke-linecap:round;
+stroke-dasharray:900;stroke-dashoffset:900;animation:draw 3.2s .3s forwards}
+.tree circle{fill:#fff1b7;opacity:0;filter:drop-shadow(0 0 7px rgba(255,232,152,.95));animation:pop .8s forwards,starPulse 3.8s 2.5s ease-in-out infinite}
 .tree circle:nth-child(2n){animation-delay:.7s} .tree circle:nth-child(3n){animation-delay:1.05s} .tree circle:nth-child(4n){animation-delay:1.4s}
 
 .reader{
@@ -93,14 +102,42 @@ h1 span{display:inline-block;color:var(--gold);margin-left:clamp(1rem,3vw,3.5rem
 @media(max-width:900px){
   .hero{grid-template-columns:1fr;text-align:center;align-content:start;padding-top:5rem;padding-bottom:7rem;gap:1rem}
   .copy{margin:auto} h1{font-size:clamp(4.2rem,18vw,7.4rem)} h1 span{margin-left:0}
-  .lead{margin-left:auto;margin-right:auto} .book-wrap{width:min(300px,62vw);min-width:0} .stage{min-height:auto}
+  .lead{margin-left:auto;margin-right:auto} .book-wrap{width:min(360px,72vw);min-width:0} .stage{min-height:auto}
   .tree{left:50%;right:auto;top:40%;width:min(88vw,610px);transform:translate(-50%,-50%)}
   .opened{grid-template-columns:1fr} .page.right{display:none}
 }
+
+.magic-dust{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.magic-dust i{position:absolute;width:3px;height:3px;border-radius:50%;
+background:rgba(255,224,145,.9);box-shadow:0 0 10px rgba(255,213,112,.75);
+animation:dustFloat linear infinite;opacity:.15}
+.hero.opening .copy{opacity:0!important;transform:translateX(-60px)!important;transition:1s}
+.hero.opening .book-wrap{animation:none!important;transform:translate(-13vw,-1vh) scale(1.18) rotateY(0deg) rotateX(0deg)!important;
+filter:drop-shadow(0 70px 90px rgba(0,0,0,.9)) drop-shadow(0 0 75px rgba(255,214,117,.48))!important;
+transition:1.25s cubic-bezier(.2,.8,.2,1)}
+.hero.opening .tree{opacity:.08!important;filter:blur(8px)!important;transition:1s}
+.hero.opening:after{content:"";position:fixed;inset:0;z-index:8;pointer-events:none;
+background:radial-gradient(circle at 68% 50%,rgba(255,231,167,.62),rgba(226,170,61,.18) 18%,transparent 43%);
+animation:flashOpen 1.2s .25s both}
+.open-btn:before{content:"";position:absolute;inset:-1px;border-radius:inherit;
+background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
+transform:translateX(-120%);transition:.65s}
+.open-btn{position:relative;overflow:hidden}
+.open-btn:hover:before{transform:translateX(120%)}
+.book-wrap:after{content:"";position:absolute;left:9%;right:7%;bottom:-28px;height:22px;border-radius:50%;
+background:radial-gradient(ellipse,rgba(237,191,92,.28),transparent 70%);filter:blur(12px);transform:rotateX(70deg)}
+@keyframes treeGlow{0%,100%{opacity:.30;filter:drop-shadow(0 0 15px rgba(239,199,104,.18))}
+50%{opacity:.56;filter:drop-shadow(0 0 34px rgba(239,199,104,.48))}}
+@keyframes starPulse{0%,100%{opacity:.52;transform:scale(.9)}50%{opacity:1;transform:scale(1.35)}}
+@keyframes dustFloat{0%{transform:translate3d(0,20px,0) scale(.6);opacity:0}
+15%{opacity:.55}85%{opacity:.25}100%{transform:translate3d(30px,-120vh,0) scale(1.2);opacity:0}}
+@keyframes flashOpen{0%{opacity:0}35%{opacity:1}100%{opacity:0}}
+
 </style>
 </head>
 <body>
 <canvas id="stars"></canvas>
+<div class="magic-dust" id="dust"></div>
 <div class="vignette"></div>
 
 <section class="hero" id="hero">
@@ -149,12 +186,31 @@ const c=document.getElementById('stars'),x=c.getContext('2d');let s=[],m=[];
 function size(){const d=Math.min(devicePixelRatio||1,2);c.width=innerWidth*d;c.height=innerHeight*d;c.style.width=innerWidth+'px';c.style.height=innerHeight+'px';x.setTransform(d,0,0,d,0,0);s=Array.from({length:Math.min(320,Math.floor(innerWidth*innerHeight/4200))},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.3+.2,a:Math.random()*.7+.15,p:Math.random()*6.28,v:Math.random()*.005+.002}))}
 function draw(t=0){x.clearRect(0,0,innerWidth,innerHeight);for(const q of s){x.beginPath();x.fillStyle=`rgba(248,225,164,${Math.max(.06,q.a+Math.sin(t*q.v+q.p)*.2)})`;x.arc(q.x,q.y,q.r,0,6.28);x.fill()}if(Math.random()<.004) m.push({x:Math.random()*innerWidth*.7,y:Math.random()*innerHeight*.3,l:100+Math.random()*120,a:1});m=m.filter(q=>q.a>0);for(const q of m){let g=x.createLinearGradient(q.x,q.y,q.x+q.l,q.y+q.l*.42);g.addColorStop(0,`rgba(255,241,192,${q.a})`);g.addColorStop(1,'rgba(255,241,192,0)');x.strokeStyle=g;x.beginPath();x.moveTo(q.x,q.y);x.lineTo(q.x+q.l,q.y+q.l*.42);x.stroke();q.x+=3.4;q.y+=1.45;q.a-=.017}requestAnimationFrame(draw)}
 const hero=document.getElementById('hero'),reader=document.getElementById('reader'),book=document.getElementById('book');
-function openBook(){reader.classList.add('show');reader.setAttribute('aria-hidden','false')}
+function openBook(){
+  if(hero.classList.contains('opening')) return;
+  hero.classList.add('opening');
+  setTimeout(()=>{
+    reader.classList.add('show');
+    reader.setAttribute('aria-hidden','false');
+    hero.classList.remove('opening');
+  },1200);
+}
 function closeBook(){reader.classList.remove('show');reader.setAttribute('aria-hidden','true')}
 document.getElementById('open').onclick=openBook;book.onclick=openBook;document.getElementById('close').onclick=closeBook;
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeBook()});
 document.addEventListener('pointermove',e=>{if(innerWidth<900)return;let a=(e.clientX/innerWidth-.5)*2,b=(e.clientY/innerHeight-.5)*2;book.style.transform=`translateY(-2px) rotateY(${-9+a*3}deg) rotateX(${2-b*2}deg)`});
 document.addEventListener('pointerleave',()=>book.style.removeProperty('transform'));
+
+const dust=document.getElementById('dust');
+for(let i=0;i<42;i++){
+  const p=document.createElement('i');
+  p.style.left=(Math.random()*100)+'%';
+  p.style.top=(65+Math.random()*45)+'%';
+  p.style.animationDuration=(10+Math.random()*18)+'s';
+  p.style.animationDelay=(-Math.random()*22)+'s';
+  p.style.width=p.style.height=(1+Math.random()*3)+'px';
+  dust.appendChild(p);
+}
 addEventListener('resize',size);size();requestAnimationFrame(draw);
 </script>
 </body>
