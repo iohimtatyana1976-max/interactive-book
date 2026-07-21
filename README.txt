@@ -14,3 +14,8 @@
 2. Нажмите Commit changes.
 3. Подождите 1–3 минуты.
 4. Обновите сайт через Ctrl+F5.
+
+
+Director's Cut:
+- Unicorn appears after Shkrat.
+- Intro timing reduced about 20%.
