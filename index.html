@@ -4,100 +4,44 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#050505">
-  <meta name="description" content="Интерактивная книга «Большой миф Словении»">
   <title>Большой миф Словении</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="app" id="app">
-    <header class="topbar">
-      <div class="brand">
-        <span class="brand-title">Большой миф Словении</span>
-        <span class="divider"></span>
-        <span class="part">Часть первая</span>
+  <main class="book-page" id="bookPage">
+    <section class="serpent-panel" aria-label="Великий Змей">
+      <img src="assets/great-serpent.jpg" alt="Великий Змей — исходный образ">
+      <div class="image-shade"></div>
+    </section>
+
+    <section class="myth-panel" aria-label="Падение чешуек">
+      <div class="heading">
+        <span class="chapter">Большой миф Словении · Часть первая</span>
+        <h1>Падение чешуек</h1>
+        <p class="note">Текст мифа будет вставлен сюда без изменений после утверждения композиции.</p>
       </div>
 
-      <button class="tree-mark" aria-label="На главную" title="На главную">
-        <span>♧</span>
-      </button>
+      <div class="void" aria-hidden="true">
+        <span class="star s1"></span>
+        <span class="star s2"></span>
+        <span class="star s3"></span>
 
-      <div class="actions">
-        <button class="icon-btn" id="musicBtn" aria-pressed="false" title="Музыка">
-          <span class="icon">♫</span>
-          <span class="label">Музыка</span>
-        </button>
-        <button class="icon-btn" id="menuBtn" aria-expanded="false" title="Меню">
-          <span class="icon">☰</span>
-          <span class="label">Меню</span>
-        </button>
+        <div class="scale scale-one"></div>
+        <div class="scale scale-two"></div>
+        <div class="scale scale-three"></div>
+
+        <div class="gold-dust"></div>
+        <div class="impact">
+          <i></i><i></i><i></i>
+        </div>
       </div>
-    </header>
+    </section>
 
-    <main class="book" id="book">
-      <section class="page active" data-page="1" aria-label="Падение первой чешуйки">
-        <div class="copy">
-          <div class="number">1</div>
-          <div class="ornament"></div>
-          <h1>Падение<br>первой чешуйки</h1>
+    <button class="nav prev" id="prev" aria-label="Назад">‹</button>
+    <button class="nav next" id="next" aria-label="Вперёд">›</button>
 
-          <div class="story">
-            <p>В начале не было ничего, кроме Великого Змея, плывущего в безмолвии.</p>
-            <p>И когда он вздохнул однажды — одна чешуйка отделилась от его вечной кожи.</p>
-          </div>
-        </div>
-
-        <div class="visual" aria-hidden="true">
-          <div class="serpent"></div>
-          <div class="dust dust-a"></div>
-          <div class="dust dust-b"></div>
-
-          <div class="falling-scale">
-            <div class="scale-texture"></div>
-          </div>
-
-          <div class="impact">
-            <span class="ring r1"></span>
-            <span class="ring r2"></span>
-            <span class="ring r3"></span>
-          </div>
-        </div>
-      </section>
-
-      <button class="page-nav prev" id="prevBtn" aria-label="Предыдущая страница">‹</button>
-      <button class="page-nav next" id="nextBtn" aria-label="Следующая страница">›</button>
-    </main>
-
-    <footer class="footer">
-      <button class="toc" id="tocBtn">▤ <span>Оглавление</span></button>
-
-      <nav class="pagination" aria-label="Страницы">
-        <button class="dot active" data-page="1">1</button>
-        <button class="dot" data-page="2">2</button>
-        <button class="dot" data-page="3">3</button>
-        <button class="dot" data-page="4">4</button>
-        <button class="dot" data-page="5">5</button>
-        <button class="dot" data-page="6">6</button>
-        <button class="dot" data-page="7">7</button>
-        <button class="dot" data-page="8">8</button>
-        <button class="dot" data-page="9">9</button>
-        <button class="dot" data-page="10">10</button>
-        <button class="dot" data-page="11">11</button>
-        <button class="dot" data-page="12">12</button>
-      </nav>
-
-      <button class="fullscreen" id="fullscreenBtn">⛶ <span>На весь экран</span></button>
-    </footer>
-
-    <aside class="panel" id="panel" aria-hidden="true">
-      <button class="panel-close" id="panelClose" aria-label="Закрыть">×</button>
-      <h2>Большой миф Словении</h2>
-      <p>Первая техническая версия интерактивной книги.</p>
-      <button class="panel-link active">1. Падение первой чешуйки</button>
-      <button class="panel-link disabled">2. Следующая иллюстрация</button>
-    </aside>
-
-    <div class="toast" id="toast">Следующая иллюстрация ещё не добавлена</div>
-  </div>
+    <div class="status" id="status">Первая сцена</div>
+  </main>
 
   <script src="script.js"></script>
 </body>
